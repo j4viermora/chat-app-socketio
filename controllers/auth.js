@@ -1,6 +1,7 @@
 const { response } = require("express");
 const   Usuario    = require("../models/users");
-
+const   bcrypt     = require("bcryptjs");
+const { generateJWT } = require("../helpers/generateJWT");
 
 const createUser =  async( req, res = response) => {
 
@@ -17,15 +18,22 @@ const createUser =  async( req, res = response) => {
             })
         }
 
+        const usuario = new Usuario( req.body );
         //encriptar contraseña
 
-        //guardar en base de datos 
+        const salt = bcrypt.genSaltSync();
+        usuario.password = bcrypt.hashSync( password, salt );
 
-        const usuario = new Usuario( req.body );
+        //guardar en base de datos 
         await usuario.save();
+        
+        //Generar JWT
+        const token = await generateJWT( usuario.id );
+
 
         res.json({
-            usuario
+            usuario,
+            token
         })
        
 
@@ -39,24 +47,70 @@ const createUser =  async( req, res = response) => {
 
 }
 
-const login =  async(req, res ) => {
+const login =  async (req = require, res = response ) => {
     
-    const body = req.body
+    const { email, password } = req.body
 
-    res.json({
-        status:true,
-        msg:"login",
-        body
-    })
+    try{
+
+        // verificando correo electronico
+        const usuarioDB = await Usuario.findOne({ email });
+
+        if( !usuarioDB ){
+            return res.status( 404 ).json({
+                   status: false,
+                   msg: "Algunos datos incorrectos"
+                });
+        }
+
+        //validad el password
+
+        const validatePassword = bcrypt.compareSync( password, usuarioDB.password );
+
+        if( !validatePassword ){
+            return res.status( 404 ).json({
+                ok: false,
+                msg: 'Algunos datos ingresados son incorrectos'
+            })
+        }
+
+        //Generar JWT
+
+        const token = await generateJWT( usuarioDB.id );
+
+        res.status( 200 ).json({
+            usuarioDB,
+            token
+        })
+
+
+    }catch(err){
+        console.log(err)
+        res.json({
+            status: false,
+            msg:'Algo anda mal intente en breve'
+        });
+
+    }
 }
 
 
 const renewToken = async (req, res) => {
+    
+
+    const uid = req.uid;
+
+    const token = await generateJWT( uid );
+
+    const usuario = await Usuario.findById( uid );
+
+
     res.status( 200 ).json({
         status: true,
-        msg: 'token'
+        usuario,
+        token,
     })
-}
+};
 
 
 
