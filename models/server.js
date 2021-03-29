@@ -40,6 +40,7 @@ class Server {
         //Api end points
 
         this.app.use( '/api/login', require( '../routers/auth' ) );
+        this.app.use( '/api/messages', require( '../routers/menssages' ) );
 
     }
 

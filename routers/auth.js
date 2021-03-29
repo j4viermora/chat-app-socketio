@@ -2,7 +2,6 @@
 
     path del end point correspondiente
 
-
 */
 const { Router } = require( 'express' );
 const { check }  = require( 'express-validator' );
