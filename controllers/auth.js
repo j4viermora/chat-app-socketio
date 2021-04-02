@@ -14,7 +14,7 @@ const createUser =  async( req, res = response) => {
         if( beEmail ){
             return  res.status(400).json({
                 status: false,
-                msg:"Algo anda mal"
+                msg:"Something is wrong"
             })
         }
 
@@ -32,6 +32,7 @@ const createUser =  async( req, res = response) => {
 
 
         res.json({
+            status: true,
             usuario,
             token
         })
@@ -79,6 +80,7 @@ const login =  async (req = require, res = response ) => {
         const token = await generateJWT( usuarioDB.id );
 
         res.status( 200 ).json({
+            status: true,
             usuarioDB,
             token
         })
@@ -86,7 +88,7 @@ const login =  async (req = require, res = response ) => {
 
     }catch(err){
         console.log(err)
-        res.json({
+        res.status( 500 ).json({
             status: false,
             msg:'Algo anda mal intente en breve'
         });
