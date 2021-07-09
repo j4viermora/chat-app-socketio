@@ -2,11 +2,11 @@
   "name": "01-socket-server-basic",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js",
-    "start": "node index.js"
+    "dev": "nodemon src",
+    "start": "node src"
   },
   "author": "",
   "license": "ISC",

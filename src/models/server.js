@@ -41,6 +41,7 @@ class Server {
 
         this.app.use( '/api/login', require( '../routers/auth' ) );
         this.app.use( '/api/messages', require( '../routers/menssages' ) );
+        this.app.use( '/api/health', require( '../routers/health' ) );
 
     }
 
